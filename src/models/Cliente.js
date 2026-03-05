@@ -9,7 +9,7 @@ class Cliente {
 
 
     setTipoCliente(valor) {
-        this.tipoCliente = valor/*valorFormatado*/;
+        this.tipoCliente = valor;
     }
 
     setObservacoes(valor) {
