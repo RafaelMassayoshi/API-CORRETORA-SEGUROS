@@ -1,19 +1,34 @@
+import ClienteService from "../services/ClienteService.js";
 import Cliente from "../models/Cliente.js";
 import ClientePf from "../models/ClientePf.js";
 
 class ClientesController {
 
     static async cadastrar(requisicao, resposta) {
-        const { id, tipoCliente } = await Cliente.cadastrar(requisicao);
+        const retorno = ClienteService.validarCorpoReq(requisicao, resposta);
+        console.log(retorno)
 
+        if (retorno.status === false) {
+            console.log("Houve erros", retorno)
+            resposta.status(retorno.statusCod).json({retorno})
+            return;
+        }
+
+        requisicao.body = retorno;
+        const { id, tipoCliente } = await Cliente.cadastrar(requisicao);
 
         switch (true) {
             case tipoCliente === "PF":
                 const resultado = await ClientePf.cadastrar(id, requisicao);
-                console.log(resultado)
-                resposta.status(resultado.codStatus).json(resultado)
+                if (!resultado.status === true) {
+                    Cliente.deletar(id)
+                }
+                resposta.status(resultado.statusCod).json(resultado)
                 break;
         }
+
+
+
 
     }
 

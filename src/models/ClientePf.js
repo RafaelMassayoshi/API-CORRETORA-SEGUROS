@@ -91,13 +91,13 @@ class ClientePf {
             const array = clientePf.formarArray();
             const [resultado] = await conexao.execute(sql, array);
 
-            return {codStatus:201, resultado};
+            return {statusCod:201, status: true, resultado};
         } catch (erro) {
             switch (true) {
                 case erro.errno === 1062:
-                    return {codStatus:400, campo: "cpf", mensagem: "Cpf já cadastrado para outro cliente" };
+                    return {statusCod:409, campo: "cpf", mensagem: "Cpf já cadastrado para outro cliente" };
                 case erro.errno === 1048:
-                    return {codStatus:400, mensagem: "Preencha todos os campos obrigatorios" };
+                    return {statusCod:400, mensagem: "Preencha todos os campos obrigatorios" };
                 default : console.error(erro)
             }
         }

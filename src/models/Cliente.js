@@ -51,7 +51,7 @@ class Cliente {
         const sql = "DELETE FROM clientes WHERE id = ?"
 
         const [resultado] = await conexao.execute(sql, [id]);
-        return resultado;
+        return {codStatus:400, status: false, menssagem: "Falaha ao cadastrar cliente, verifique os campos informados e tente novamente", resultado}
     }
     static async listar(requisicao, resposta) {
         const sql = `
