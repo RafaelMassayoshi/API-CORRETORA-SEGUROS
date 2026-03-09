@@ -51,9 +51,9 @@ class ClientePfService {
         const sexo = corpo.sexo;
         const opcoes = ['MASCULINO', 'FEMININO'];
         if (!sexo) {
-            return { campo: "Sexo", mensagem: "Obrigatorio informar o sexo" }
+            return { campo: "sexo", mensagem: "Obrigatorio informar o sexo" }
         } else if (!opcoes.includes(sexo)) {
-            return { campo: "Sexo", mensagem: "Opção nvalida" };
+            return { campo: "sexo", mensagem: "Opção nvalida" };
         }
     }
 
@@ -71,7 +71,7 @@ class ClientePfService {
     static rendaBrutaMensal(corpo) {
         const renda = corpo.renda_bruta_mensal;
         if (typeof renda != "number" && renda != null) {
-            return { campo: "Renda bruta mensal", mensagem: "Formato invalido" }
+            return { campo: "renda bruta mensal", mensagem: "Formato invalido" }
         }
     }
 

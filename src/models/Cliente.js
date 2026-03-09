@@ -3,17 +3,8 @@ class Cliente {
 
 
     constructor(dados) {
-        this.setTipoCliente(dados.tipo_cliente)
-        this.setObservacoes(dados.observacoes);
-    }
-
-
-    setTipoCliente(valor) {
-        this.tipoCliente = valor;
-    }
-
-    setObservacoes(valor) {
-        this.observacoes = valor;
+        this.tipoCliente = dados.tipo_cliente;
+        this.observacoes = dados.observacoes;
     }
 
     formarArray() {
@@ -34,6 +25,7 @@ class Cliente {
         try {
             const cliente = new Cliente(dados);
             const array = cliente.formarArray();
+            console.log(dados)
             const [resultado] = await conexao.execute(sql, array)
 
             const id = resultado.insertId;
@@ -51,18 +43,24 @@ class Cliente {
         const sql = "DELETE FROM clientes WHERE id = ?"
 
         const [resultado] = await conexao.execute(sql, [id]);
-        return {codStatus:400, status: false, menssagem: "Falaha ao cadastrar cliente, verifique os campos informados e tente novamente", resultado}
+        return {sucesso: false, codStatus:400, menssagem: "Falaha ao cadastrar cliente, verifique os campos informados e tente novamente", resultado}
     }
+
     static async listar(requisicao, resposta) {
-        const sql = `
+        const sqlPf = `
         SELECT * FROM clientes INNER JOIN pessoas_fisicas WHERE clientes.id = pessoas_fisicas.id;
         `;
+        const sqlPj = `
+        SELECT * FROM clientes INNER JOIN pessoas_juridicas WHERE clientes.id = pessoas_juridicas.id;
+        `;
 
-        const [resultados] = await conexao.query(sql)
-        resultados.forEach(cliente => {
+        
+        const [resultadoPf] = await conexao.query(sqlPf)
+        const [resultadoPj] = await conexao.query(sqlPj)
 
-        })
-        resposta.status(200).json(resultados)
+        const resultados = [resultadoPf, resultadoPj]
+
+        resposta.status(200).json({resultados})
     }
 }
 

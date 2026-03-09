@@ -5,15 +5,14 @@ class ClienteService {
     //validar os dados enviados pelo corpo da requisicao
     static validarCorpoReq(requisicao, resposta) {
         const corpoReqFormatado = ClienteService.corpo(requisicao);
-
         const erros = ClienteService.tipoCliente(corpoReqFormatado);
+        
         if (erros.length === 0) {
             return corpoReqFormatado;
         } else {
-            return { status: false, statusCod: 400, erros };
+            return { sucesso: false, statusCod: 400, erros };
         }
     }
-
     //Formata todos os dados enviados e se não for passado define como nullo;
     static corpo(requisicao) {
         const corpo = requisicao.body;
@@ -40,8 +39,7 @@ class ClienteService {
                 return ClientePfService.validar(corpo);
 
             case corpo.tipo_cliente === "PJ":
-                console.log("Ainda sem função");
-                break
+                return [];
 
             default:
                 console.log("Informe um tipo valido")
