@@ -44,9 +44,8 @@ class ClientePj{
         ) VALUES (
          ?,?,?,?,?,?,?,?,?)`;
         try {
-            const cliente = new ClientePj(id, dados);
-            const array = cliente.formarArray(cliente);
-            console.log(cliente, array)
+            const clientePj = new ClientePj(id, dados);
+            const array = clientePj.formarArray();
             const [resultado] = await conexao.execute(sql, array);
 
             return { sucesso: true, statusCod: 201, resultado };

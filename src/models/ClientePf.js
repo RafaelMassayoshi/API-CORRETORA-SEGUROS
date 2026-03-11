@@ -3,7 +3,7 @@ import conexao from "../conexao.js";
 class ClientePf{
 
     constructor(id, dados) {
-    
+        
         this.id = id;
         this.nome = dados.nome;
         this.nomeSocial = dados.nome_social;
@@ -31,8 +31,7 @@ class ClientePf{
         ]
     }
 
-    static async cadastrar(id, requisicao) {
-        const dados = requisicao.body
+    static async cadastrar(id, dadosCliente) {
         const sql = `INSERT INTO pessoas_fisicas (
         id,
         nome,
@@ -46,8 +45,9 @@ class ClientePf{
         renda_bruta_mensal
         ) VALUES (
          ?,?,?,?,?,?,?,?,?,?)`;
+
         try {
-            const clientePf = new ClientePf(id, dados);
+            const clientePf = new ClientePf(id, dadosCliente)
             const array = clientePf.formarArray();
             const [resultado] = await conexao.execute(sql, array);
 

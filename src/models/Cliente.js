@@ -14,25 +14,19 @@ class Cliente {
         ]
     }
 
-    static async cadastrar(requisicao) {
-        const dados = requisicao.body;
+    static async cadastrar(dados) {
+
         const sql = `INSERT INTO clientes (
            tipo_cliente,
            observacoes
            ) VALUES (
             ?,?)`;
-
         try {
             const cliente = new Cliente(dados);
             const array = cliente.formarArray();
-            console.log(dados)
             const [resultado] = await conexao.execute(sql, array)
 
-            const id = resultado.insertId;
-            const tipoCliente = cliente.tipoCliente;
-
-
-            return { id, tipoCliente }
+            return resultado.insertId;
         } catch (erro) {
             console.error(erro)
         }
@@ -43,24 +37,30 @@ class Cliente {
         const sql = "DELETE FROM clientes WHERE id = ?"
 
         const [resultado] = await conexao.execute(sql, [id]);
-        return {sucesso: false, codStatus:400, menssagem: "Falaha ao cadastrar cliente, verifique os campos informados e tente novamente", resultado}
+        return resultado;
     }
 
-    static async listar(requisicao, resposta) {
-        const sqlPf = `
-        SELECT * FROM clientes INNER JOIN pessoas_fisicas WHERE clientes.id = pessoas_fisicas.id;
-        `;
-        const sqlPj = `
-        SELECT * FROM clientes INNER JOIN pessoas_juridicas WHERE clientes.id = pessoas_juridicas.id;
-        `;
+    static async listar() {
+        const sqlPf = `SELECT * FROM clientes INNER JOIN pessoas_fisicas ON clientes.id = pessoas_fisicas.id;`;
+        const sqlPj = `SELECT * FROM clientes INNER JOIN pessoas_juridicas WHERE clientes.id = pessoas_juridicas.id;`;
 
-        
-        const [resultadoPf] = await conexao.query(sqlPf)
-        const [resultadoPj] = await conexao.query(sqlPj)
 
-        const resultados = [resultadoPf, resultadoPj]
+        const [resultadoPf] = await conexao.execute(sqlPf)
+        const [resultadoPj] = await conexao.execute(sqlPj)
 
-        resposta.status(200).json({resultados})
+        const clientes = []
+
+        resultadoPf.forEach(clientePf => {
+            clientes.push(clientePf)
+        })
+        resultadoPj.forEach(clientePJ => {
+            clientes.push(clientePJ)
+        })
+
+
+        console.log(clientes)
+        return { sucesso: true, statusCod: 200, clientes }
+
     }
 }
 

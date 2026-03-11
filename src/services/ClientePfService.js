@@ -1,3 +1,6 @@
+import Cliente from "../models/Cliente.js";
+import ClientePf from "../models/ClientePf.js";
+
 class ClientePfService {
 
     static validar(corpo) {
@@ -75,5 +78,8 @@ class ClientePfService {
         }
     }
 
+    static async cadastrar(corpoRequisicaoFormatado){
+        
+    }
 }
 export default ClientePfService;
