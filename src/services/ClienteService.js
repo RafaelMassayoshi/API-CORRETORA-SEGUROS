@@ -1,6 +1,5 @@
 import ClientePfService from "./ClientePfService.js";
-import Cliente from "../models/Cliente.js";
-import ClientePf from "../models/ClientePf.js";
+import ClientePjService from "./ClientePjService.js";
 
 class ClienteService {
 
@@ -29,28 +28,13 @@ class ClienteService {
 
     //verificar se o tipo de cliente informado é valido e insere no banco ou retorna os campos de erros
     static async validarPorTipoCliente(corpoRequisicaoFormatado) {
-
         switch (true) {
+
             case corpoRequisicaoFormatado.tipo_cliente === "PF":
-
-                const erros = ClientePfService.validar(corpoRequisicaoFormatado);
-                const errosCapturados = this.verificarErros(erros);
-
-                if (errosCapturados.sucesso === true) {
-                    const id = await Cliente.cadastrar(corpoRequisicaoFormatado);
-                    const retornoPf = await ClientePf.cadastrar(id, corpoRequisicaoFormatado);
-
-                    if (!retornoPf || retornoPf.sucesso === false) {
-                        await Cliente.deletar(id);
-                    }
-                    return retornoPf
-
-                } else {
-                    return errosCapturados;
-                }
+                return await ClientePfService.cadastrar(corpoRequisicaoFormatado);
 
             case corpoRequisicaoFormatado.tipo_cliente === "PJ":
-                return [];
+                return await ClientePjService.cadastrar(corpoRequisicaoFormatado);
 
             default:
                 console.log("Informe um tipo valido")
@@ -58,14 +42,6 @@ class ClienteService {
         }
     }
 
-    static verificarErros(erros) {
-        if (erros.length !== 0) {
-            return { sucesso: false, statusCod: 400, erros };
-        } else {
-            return { sucesso: true }
-        }
-
-    }
 }
 
 export default ClienteService;

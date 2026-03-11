@@ -1,8 +1,16 @@
-import Cliente from "../models/Cliente.js";
 import ClientePf from "../models/ClientePf.js";
 
 class ClientePfService {
 
+    static async cadastrar(dados) {
+        const erros = this.validar(dados)
+
+        if(erros.sucesso === true){
+            return await ClientePf.cadastrar(dados);
+        } else {
+            return erros;
+        }
+    }
     static validar(corpo) {
         const erroscapturados = []
         const validacoes = [
@@ -20,7 +28,12 @@ class ClientePfService {
                 erroscapturados.push(erro)
             }
         })
-        return erroscapturados;
+    
+        if (erroscapturados.length !== 0) {
+            return { sucesso: false, statusCod: 400, erroscapturados }
+        } else {
+            return { sucesso: true }
+        }
     }
 
     static nome(corpo) {
@@ -76,10 +89,6 @@ class ClientePfService {
         if (typeof renda != "number" && renda != null) {
             return { campo: "renda bruta mensal", mensagem: "Formato invalido" }
         }
-    }
-
-    static async cadastrar(corpoRequisicaoFormatado){
-        
     }
 }
 export default ClientePfService;

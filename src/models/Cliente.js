@@ -1,7 +1,5 @@
 import conexao from "../conexao.js";
 class Cliente {
-
-
     constructor(dados) {
         this.tipoCliente = dados.tipo_cliente;
         this.observacoes = dados.observacoes;
@@ -15,7 +13,6 @@ class Cliente {
     }
 
     static async cadastrar(dados) {
-
         const sql = `INSERT INTO clientes (
            tipo_cliente,
            observacoes

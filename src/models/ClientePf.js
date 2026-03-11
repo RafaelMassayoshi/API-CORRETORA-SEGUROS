@@ -1,10 +1,10 @@
 import conexao from "../conexao.js";
+import Cliente from "./Cliente.js";
 
-class ClientePf{
+class ClientePf extends Cliente{
 
-    constructor(id, dados) {
-        
-        this.id = id;
+    constructor(dados) {
+        super(dados)
         this.nome = dados.nome;
         this.nomeSocial = dados.nome_social;
         this.dataNascimento = dados.data_nascimento;
@@ -16,9 +16,9 @@ class ClientePf{
         this.rendaBrutaMensal = dados.renda_bruta_mensal
     }
 
-    formarArray() {
+    formarArray(id) {
         return [
-            this.id,
+            this.id = id,
             this.nome,
             this.nomeSocial,
             this.dataNascimento,
@@ -31,7 +31,7 @@ class ClientePf{
         ]
     }
 
-    static async cadastrar(id, dadosCliente) {
+    static async cadastrar(dadosCliente) {
         const sql = `INSERT INTO pessoas_fisicas (
         id,
         nome,
@@ -47,8 +47,9 @@ class ClientePf{
          ?,?,?,?,?,?,?,?,?,?)`;
 
         try {
-            const clientePf = new ClientePf(id, dadosCliente)
-            const array = clientePf.formarArray();
+            const clientePf = new ClientePf(dadosCliente)
+            const id = await super.cadastrar(dadosCliente)
+            const array = clientePf.formarArray(id);
             const [resultado] = await conexao.execute(sql, array);
 
             return {sucesso: true, statusCod:201, resultado};
