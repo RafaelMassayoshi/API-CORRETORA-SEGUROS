@@ -3,13 +3,12 @@ import ClientePf from "../models/ClientePf.js";
 class ClientePfService {
 
     static async cadastrar(dados) {
-        const erros = this.validar(dados)
+        const respostaValidacao = this.validar(dados)
 
-        if(erros.sucesso === true){
+        if(respostaValidacao.sucesso === true){
             return await ClientePf.cadastrar(dados);
-        } else {
-            return erros;
         }
+        return respostaValidacao;
     }
     static validar(corpo) {
         const erroscapturados = []

@@ -7,6 +7,7 @@ class ClienteService {
     static async validarCorpoReq(requisicao) {
         const corpoRequisicaoFormatado = this.toUpperAndTrim(requisicao);
         return await this.validarPorTipoCliente(corpoRequisicaoFormatado);
+
     }
     //Formata todos os dados enviados e se não for passado define como nullo;
     static toUpperAndTrim(requisicao) {

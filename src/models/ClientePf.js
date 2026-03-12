@@ -1,7 +1,7 @@
 import conexao from "../conexao.js";
 import Cliente from "./Cliente.js";
 
-class ClientePf extends Cliente{
+class ClientePf extends Cliente {
 
     constructor(dados) {
         super(dados)
@@ -46,20 +46,23 @@ class ClientePf extends Cliente{
         ) VALUES (
          ?,?,?,?,?,?,?,?,?,?)`;
 
-        try {
-            const clientePf = new ClientePf(dadosCliente)
-            const id = await super.cadastrar(dadosCliente)
-            const array = clientePf.formarArray(id);
-            const [resultado] = await conexao.execute(sql, array);
 
-            return {sucesso: true, statusCod:201, resultado};
+        const clientePf = new ClientePf(dadosCliente)
+        const retornoCadastro = await super.cadastrar(dadosCliente)
+        const array = clientePf.formarArray(retornoCadastro.resultado.insertId);
+
+        try {
+            const [resultado] = await conexao.execute(sql, array);
+            return { sucesso: true, statusCod: 201, resultado };
+
         } catch (erro) {
+            super.deletar(retornoCadastro.resultado.insertId)
             switch (true) {
                 case erro.errno === 1062:
-                    return {sucesso: false, statusCod:409, campo: "cpf", mensagem: "Cpf já cadastrado para outro cliente" };
+                    return { sucesso: false, statusCod: 409, campo: "cpf", mensagem: "Cpf já cadastrado para outro cliente" };
                 case erro.errno === 1048:
-                    return {sucesso: false, statusCod:400, mensagem: "Preencha todos os campos obrigatorios" };
-                default : console.error(erro)
+                    return { sucesso: false, statusCod: 400, mensagem: "Preencha todos os campos obrigatorios" };
+                default: console.error(erro)
             }
         }
     }

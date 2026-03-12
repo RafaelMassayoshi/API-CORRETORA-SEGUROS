@@ -22,8 +22,8 @@ class Cliente {
             const cliente = new Cliente(dados);
             const array = cliente.formarArray();
             const [resultado] = await conexao.execute(sql, array)
-
-            return resultado.insertId;
+            
+            return { sucesso: true, statusCod: 201, resultado };
         } catch (erro) {
             console.error(erro)
         }

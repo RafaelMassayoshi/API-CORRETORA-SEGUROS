@@ -1,6 +1,6 @@
 import conexao from "../conexao.js"
 import Cliente from "./Cliente.js"
-class ClientePj extends Cliente{
+class ClientePj extends Cliente {
 
     constructor(dados) {
         super(dados)
@@ -43,14 +43,15 @@ class ClientePj extends Cliente{
         ) VALUES (
          ?,?,?,?,?,?,?,?,?)`;
 
+        const cliente = new ClientePj(dados);
+        const retornoCadastro = await super.cadastrar(dados)
+        const array = cliente.formarArray(retornoCadastro.resultado.insertId);
         try {
-            const cliente = new ClientePj(dados);
-            const id = await super.cadastrar(dados)
-            const array = cliente.formarArray(id);
             const [resultado] = await conexao.execute(sql, array);
 
             return { sucesso: true, statusCod: 201, resultado };
         } catch (erro) {
+            super.deletar(retornoCadastro.resultado.insertId)
             switch (true) {
                 case erro.errno === 1062:
                     return { sucesso: false, statusCod: 409, campo: "cnpj", mensagem: "CNPJ já cadastrado para outro cliente" };
